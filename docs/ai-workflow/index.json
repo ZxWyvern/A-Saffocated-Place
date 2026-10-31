@@ -1,0 +1,115 @@
+{
+  "format": "unity-project-workflow-index",
+  "format_version": "1.2",
+  "workflow_version": "1",
+  "profile": "compact",
+  "project": {
+    "root": ".",
+    "product_type": "game",
+    "tier": "small"
+  },
+  "snapshot": {
+    "observed_date": "2026-10-31",
+    "source_kind": "git",
+    "revision": "6654a282e6536674792d9ce4d460e8bf66054ebd",
+    "dirty": true,
+    "completeness_limits": [
+      "pre-production snapshot",
+      "gameplay scripts not yet authored"
+    ]
+  },
+  "documents": [
+    {
+      "id": "doc-agent",
+      "path": "docs/ai-workflow/agent.md",
+      "path_state": "generated",
+      "purpose": "portable agent profile"
+    },
+    {
+      "id": "doc-context",
+      "path": "docs/ai-workflow/project-context.md",
+      "path_state": "generated",
+      "purpose": "canonical facts"
+    },
+    {
+      "id": "doc-sessions",
+      "path": "docs/ai-workflow/sessions",
+      "path_state": "generated",
+      "purpose": "sharded session handoffs (one file per branch and actor)"
+    },
+    {
+      "id": "doc-matrix",
+      "path": "docs/ai-workflow/validation-matrix.md",
+      "path_state": "generated",
+      "purpose": "checks and status"
+    }
+  ],
+  "entry_points": [
+    {
+      "id": "entry-sample",
+      "path": "Assets/Scenes/SampleScene.unity",
+      "path_state": "existing",
+      "kind": "development_scene",
+      "certainty": "provisional",
+      "claim_ids": [
+        "C-003",
+        "C-004"
+      ]
+    }
+  ],
+  "stack": [
+    {
+      "name": "Unity Editor (declared)",
+      "version": "6000.3.8f1",
+      "claim_ids": [
+        "C-001"
+      ]
+    },
+    {
+      "name": "Universal Render Pipeline",
+      "version": "17.3.0",
+      "claim_ids": [
+        "C-002"
+      ]
+    },
+    {
+      "name": "Unity Input System",
+      "version": "1.18.0",
+      "claim_ids": [
+        "C-002"
+      ]
+    }
+  ],
+  "task_routes": [
+    {
+      "id": "R-001",
+      "title": "Cue resolution pure C# logic and EditMode test suite",
+      "document": "agent.md",
+      "check_ids": [
+        "V-003"
+      ]
+    },
+    {
+      "id": "R-002",
+      "title": "Matchstick controller and audio ducking implementation",
+      "document": "agent.md",
+      "check_ids": [
+        "V-004"
+      ]
+    },
+    {
+      "id": "R-003",
+      "title": "Threat state machine and encounter manager",
+      "document": "agent.md",
+      "check_ids": [
+        "V-005"
+      ]
+    }
+  ],
+  "refresh_triggers": [
+    "package_or_unity_version_changed",
+    "entry_path_changed",
+    "source_changed",
+    "design_authority_changed"
+  ]
+}
