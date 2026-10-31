@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using LastShift.Matchstick;
 
 namespace LastShift.Player
@@ -123,8 +124,12 @@ namespace LastShift.Player
 
         private void HandleLook()
         {
-            float mouseX = Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
-            float mouseY = Input.GetAxisRaw("Mouse Y") * _mouseSensitivity;
+            var mouse = Mouse.current;
+            if (mouse == null) return;
+
+            Vector2 mouseDelta = mouse.delta.ReadValue();
+            float mouseX = mouseDelta.x * _mouseSensitivity * 0.1f;
+            float mouseY = mouseDelta.y * _mouseSensitivity * 0.1f;
 
             _cameraPitch -= mouseY;
             _cameraPitch = Mathf.Clamp(_cameraPitch, _minPitch, _maxPitch);
@@ -145,8 +150,20 @@ namespace LastShift.Player
                 _velocity.y = -2f;
             }
 
-            float moveX = Input.GetAxisRaw("Horizontal");
-            float moveZ = Input.GetAxisRaw("Vertical");
+            var keyboard = Keyboard.current;
+            float moveX = 0f;
+            float moveZ = 0f;
+            bool wantsSprint = false;
+
+            if (keyboard != null)
+            {
+                if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) moveX += 1f;
+                if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) moveX -= 1f;
+                if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) moveZ += 1f;
+                if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) moveZ -= 1f;
+
+                wantsSprint = _isSprintAllowed && (keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed);
+            }
 
             Vector3 moveDirection = (transform.right * moveX + transform.forward * moveZ).normalized;
 
@@ -155,7 +172,7 @@ namespace LastShift.Player
             {
                 currentSpeed = _crouchSpeed;
             }
-            else if (_isSprintAllowed && Input.GetKey(KeyCode.LeftShift))
+            else if (wantsSprint)
             {
                 currentSpeed = _sprintSpeed;
             }
@@ -186,7 +203,8 @@ namespace LastShift.Player
 
         private void HandleCrouch()
         {
-            bool wantsCrouch = Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.LeftControl);
+            var keyboard = Keyboard.current;
+            bool wantsCrouch = keyboard != null && (keyboard.cKey.isPressed || keyboard.leftCtrlKey.isPressed || keyboard.rightCtrlKey.isPressed);
 
             if (wantsCrouch != _isCrouching)
             {
@@ -224,7 +242,8 @@ namespace LastShift.Player
                         OnInteractionPromptChanged?.Invoke(interactable.InteractionPrompt);
                     }
 
-                    if (Input.GetKeyDown(KeyCode.E))
+                    var keyboard = Keyboard.current;
+                    if (keyboard != null && keyboard.eKey.wasPressedThisFrame)
                     {
                         interactable.Interact(this);
                     }
@@ -246,8 +265,13 @@ namespace LastShift.Player
                 return;
             }
 
-            // Left Mouse Button or F to strike match
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
+            var mouse = Mouse.current;
+            var keyboard = Keyboard.current;
+
+            bool strikePressed = (mouse != null && mouse.leftButton.wasPressedThisFrame) ||
+                                 (keyboard != null && keyboard.fKey.wasPressedThisFrame);
+
+            if (strikePressed)
             {
                 _matchstickController.TryIgnite();
             }

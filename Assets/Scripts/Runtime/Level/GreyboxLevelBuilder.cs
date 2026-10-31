@@ -61,14 +61,41 @@ namespace LastShift.Level
 
         public void BuildLevelIfEmpty()
         {
+            // First attempt to bind already-authored MCP scene objects under Environment
+            var env = GameObject.Find("Environment");
+            if (env != null)
+            {
+                BindExistingSceneObjects(env.transform);
+                return;
+            }
+
             if (transform.childCount > 0)
             {
+                BindExistingSceneObjects(transform);
                 return; // Level already generated
             }
 
             BuildOffice();
             BuildVentSystem();
             BuildMonsterVisual();
+        }
+
+        public void BindExistingSceneObjects(Transform root)
+        {
+            _officePlayerSpawn = root.Find("Office/Spawn_Office");
+            _officeBlockedDoor = root.Find("Office/Door_Blocked")?.gameObject;
+            _computerInteractable = root.Find("Office/ComputerMonitor")?.GetComponent<InteractableItem>();
+            _motherNoteInteractable = root.Find("Office/MotherNote")?.GetComponent<InteractableItem>();
+            _deadlineNoteInteractable = root.Find("Office/DeadlineNote")?.GetComponent<InteractableItem>();
+            _newspaperInteractable = root.Find("Office/Newspaper")?.GetComponent<InteractableItem>();
+            _ventEntranceInteractable = root.Find("Office/VentGrate_Entrance")?.GetComponent<InteractableItem>();
+
+            _loopPlayerSpawn = root.Find("VentSystem/Spawn_Loop");
+            _pursuitPlayerSpawn = root.Find("VentSystem/Spawn_Pursuit");
+            _idCardInteractable = root.Find("VentSystem/RestRoom/Employee_ID_Card")?.GetComponent<InteractableItem>();
+            _ventExitInteractable = root.Find("VentSystem/VentGrate_Exit")?.GetComponent<InteractableItem>();
+
+            _monsterSilhouette = root.Find("Monster_Silhouette")?.gameObject;
         }
 
         private void BuildOffice()

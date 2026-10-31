@@ -21,8 +21,9 @@ Files created or updated:
 Coverage: Full vertical slice core loop operational; all parameter values adhere strictly to last-shift-gdd/14-parameters.md.
 Key facts (claim IDs): C-001, C-002, C-003, C-004, C-005, C-006, C-007, C-008
 Decisions made, proposed, unresolved:
-- MVPBootstrap configured as composition root directly inside SampleScene.unity without global singletons or FindObjectOfType (ARC-01..05).
-- Runtime procedural greybox generation ensures out-of-the-box playable experience on scene load.
+- PlayerController upgraded to Unity New Input System (UnityEngine.InputSystem: Keyboard.current, Mouse.current).
+- Scene GameObjects, hierarchy, and components authored and saved directly in SampleScene.unity via AnkleBreaker Unity MCP bridge.
+- MVPBootstrap and GreyboxLevelBuilder bind to authored scene objects in SampleScene.unity without runtime generation (ARC-01..05).
 Checks run this session (IDs only; see validation matrix): V-001, V-003
 Checks not run and why: V-002 (requires live Unity Editor test runner), V-004, V-005.
 Blockers, missing access, pending integration: None.
